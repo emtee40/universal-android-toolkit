@@ -43,6 +43,7 @@ public class AdvancedUI extends JFrame {
     BusyBox busyBox = null;
     BuildProp buildProp = null;
     AdvancedDevices devices = null;
+    int usedPushes = 0;
     
 
     /**
@@ -639,6 +640,10 @@ public class AdvancedUI extends JFrame {
             jTextField1.setText(apkChooser.getSelectedFile().toString());
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    /**
+     * Installs selected application to selected device.
+     * @param evt 
+     */
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         log.log(LogLevel.INFO, "Installing application " + jTextField1.getText() + " to device " + devices.getSelectedADBDevice());
         try {
@@ -650,22 +655,86 @@ public class AdvancedUI extends JFrame {
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Uninstall Application">
+    /**
+     * Allows user to select an application file from his hard drive, which is then used to uninstall the application from the device.
+     * This method is purely for convenience.
+     * Personally, I added it, because I always find I have apps on my hard drive(s), which I don't need on my device, 
+     * and you never get the ability to just pick an app you have and then just have it removed.
+     * @param evt 
+     */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        JFileChooser apkChooser = new JFileChooser();
+        
+        JOptionPane.showMessageDialog(null, "INFORMATION: Only use this, if you have the application file on your computer.\n"
+                + "This is purely for convenience. Otherwise, you will have to\n"
+                + "1) Wait until the file and app managers are released\n"
+                + "2) Type the application package in, yourself.\n"
+                + "Sorry if you awaited something different. Rest assured, it's on its way!", "Don't Worry - It's Coming!", JOptionPane.INFORMATION_MESSAGE);
+        
+        apkChooser.setApproveButtonText("Select this Application");
+        apkChooser.setFileFilter(new APKFilter());
+        apkChooser.setDialogTitle("Select a .APK file to uninstall from device...");
+        int dialogRes = apkChooser.showOpenDialog(null);
+        if (dialogRes == JOptionPane.OK_OPTION)
+            jTextField2.setText(apkChooser.getSelectedFile().toString());
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    /**
+     * Attempts to uninstall the application selected in the jTextField from  the selected device.
+     * This code may be broken, due to a brain fart, but we'll see...
+     * @param evt 
+     */
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        String deviceSerial = devices.getSelectedADBDevice();
+        String[] packageName = jTextField2.getText().split("/|\\\\"); // This is where the brain fart will most likely occur.
+        String pack = packageName[packageName.length - 1];
+        String[] cmd = {"uninstall", pack};
+        log.log(LogLevel.INFO, "Uninstalling " + pack + " from device " + deviceSerial + ".");
+        try {
+            log.log(LogLevel.INFO, "ADB Output: " + adbController.executeADBCommand(false, false, deviceSerial, cmd));
+        } catch (IOException ex) {
+            log.log(LogLevel.SEVERE, "ERROR: Error while uninstalling application from device!\n" + ex.toString());
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Push File">
+    /**
+     * Allows users to select a file from the computer and push (copy) it to the device.
+     * @param evt 
+     */
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
+        if (usedPushes == 10) {
+            JOptionPane.showMessageDialog(null, "Me matey. Ye be pushin' some load o' files, thar...", "Arrrrr!", JOptionPane.INFORMATION_MESSAGE);
+            log.log(LogLevel.FINEST, "Achievement Get! Found Easter Egg \"Captain, ahoy!\""); // Dat Minecraft reference...
+        }
+        
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setAcceptAllFileFilterUsed(true);
+        fileChooser.setDialogTitle("Choose a file to push the your device...");
+        fileChooser.setApproveButtonText("Push this File...");
+        
+        int dialogRes = fileChooser.showOpenDialog(null);
+        if (dialogRes == JOptionPane.OK_OPTION)
+            jTextField3.setText(fileChooser.getSelectedFile().toString());
+        
+        usedPushes++;
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    /**
+     * Prompts user to input a location to push the selected file to, then pushes file and clears text field.
+     * @param evt 
+     */
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+        log.log(LogLevel.INFO, "Pushing file to device " + devices.getSelectedADBDevice() + ". Prompting user for file destination.");
+        String dest = JOptionPane.showInputDialog(null, "Please enter a destination on the selected device to push the selected file to.", "Choose File Destination", JOptionPane.QUESTION_MESSAGE);
+        String deviceSerial = devices.getSelectedADBDevice();
+        String[] cmd = { "push", jTextField3.getText(), dest };
+        try {
+            log.log(LogLevel.INFO, "ADB Output: " + adbController.executeADBCommand(false, false, deviceSerial, cmd));
+        } catch (IOException ex) {
+            log.log(LogLevel.SEVERE, "ERROR: Error while pushing file " + jTextField3.getText() + " to device!\n" + ex.toString());
+        }
     }//GEN-LAST:event_jButton6ActionPerformed
     //</editor-fold>
         
