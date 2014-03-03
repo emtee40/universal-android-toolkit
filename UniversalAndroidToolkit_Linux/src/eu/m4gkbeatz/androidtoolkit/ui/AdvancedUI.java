@@ -810,16 +810,33 @@ public class AdvancedUI extends JFrame {
         try {
             log.log(LogLevel.INFO, "ADB Output: " + adbController.executeADBCommand(false, true, devices.getSelectedADBDevice(), new String[]{"push", jTextField5.getText(), "/system/app/"}));
         } catch (IOException ex) {
-            
+            log.log(LogLevel.SEVERE, "ERROR: Error while installing application as root to device!" + ex.toString());
         }
     }//GEN-LAST:event_jButton10ActionPerformed
-
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Uninstall (Root) Application)">
+    /**
+     * Will soon allow users to select an application from their device to uninstall.
+     * @param evt 
+     */
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(null, "INFORMATION: Sorry, but this features has not yet been implemented.\n"
+                + "Please try again in a later version of Universal Android Toolkit. \n"
+                + "However, you can still type the location of the file and pull it that way.", "Feature not yet Implemented.", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_jButton11ActionPerformed
 
+    /**
+     * Attempts to uninstall the selected app from the system partition.
+     * @param evt 
+     */
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // TODO add your handling code here:
+        log.log(LogLevel.INFO, "Uninstalling application " + jTextField6.getText() + " from device " + devices.getSelectedADBDevice());
+        try {
+            log.log(LogLevel.FINE, "ADB Output: " + adbController.executeADBCommand(true, true, devices.getSelectedADBDevice(), new String[]{"rm", jTextField6.getText()}));
+        } catch (IOException ex) {
+            log.log(LogLevel.SEVERE, "ERROR: Error while uninstalling application from system!\n" + ex.toString());
+        }
     }//GEN-LAST:event_jButton12ActionPerformed
     //</editor-fold>
     
