@@ -308,13 +308,33 @@ public class AdvancedUI extends JFrame {
 
         jButton9.setText("Select...");
         jButton9.setToolTipText("");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
 
         jButton10.setText("Install");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
 
         jButton11.setText("Select...");
         jButton11.setToolTipText("");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
 
         jButton12.setText("Remove");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
 
         jButton13.setText("Start Server");
 
@@ -731,7 +751,9 @@ public class AdvancedUI extends JFrame {
         String deviceSerial = devices.getSelectedADBDevice();
         String[] cmd = { "push", jTextField3.getText(), dest };
         try {
-            log.log(LogLevel.INFO, "ADB Output: " + adbController.executeADBCommand(false, false, deviceSerial, cmd));
+            boolean remount = false;
+            if (dest.contains("/system")) remount = true;
+            log.log(LogLevel.INFO, "ADB Output: " + adbController.executeADBCommand(false, remount, deviceSerial, cmd));
         } catch (IOException ex) {
             log.log(LogLevel.SEVERE, "ERROR: Error while pushing file " + jTextField3.getText() + " to device!\n" + ex.toString());
         }
@@ -739,13 +761,66 @@ public class AdvancedUI extends JFrame {
     //</editor-fold>
         
     //<editor-fold defaultstate="collapsed" desc="Pull File">
+    /**
+     * This will soon allow users to browse their device for files.
+     * @param evt 
+     */
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(null, "INFORMATION: Sorry, but this features has not yet been implemented.\n"
+                + "Please try again in a later version of Universal Android Toolkit. \n"
+                + "However, you can still type the location of the file and pull it that way.", "Feature not yet Implemented.", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    /**
+     * Prompts user to select a destination on the hard drive and attempts to pull selected file.
+     * @param evt 
+     */
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
+        String dest = JOptionPane.showInputDialog(null, "INFORMATION: Please enter a destination on your hard drive to pull the file to.", "Select Destination...", JOptionPane.INFORMATION_MESSAGE);
+        log.log(LogLevel.INFO, "Pulling file " + jTextField4.getText() + " to " + dest + " from device " + devices.getSelectedADBDevice());
+        try {
+            log.log(LogLevel.INFO, "ADB Output: " + adbController.executeADBCommand(false, false, devices.getSelectedADBDevice(), new String[]{"pull", jTextField4.getText(), dest}));
+        } catch (IOException ex) {
+            log.log(LogLevel.SEVERE, "ERROR: Error while pulling file from device!\n" + ex.toString());
+        }
     }//GEN-LAST:event_jButton8ActionPerformed
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Install (root) Application">
+    /**
+     * Allows user to select a .APK file from the hard drive, which should be installed.
+     * @param evt 
+     */
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        JFileChooser apkChooser = new JFileChooser();
+        apkChooser.setApproveButtonText("Install this Application");
+        apkChooser.setFileFilter(new APKFilter());
+        apkChooser.setDialogTitle("Select a .APK file to install to device...");
+        int dialogRes = apkChooser.showOpenDialog(null);
+        if (dialogRes == JOptionPane.OK_OPTION)
+            jTextField5.setText(apkChooser.getSelectedFile().toString());
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    /**
+     * Installs selected application to device.
+     * @param evt 
+     */
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        log.log(LogLevel.INFO, "Installing application " + jTextField5.getText() + " to /system/app.");
+        try {
+            
+        } catch (IOException ex) {
+            
+        }
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton12ActionPerformed
     //</editor-fold>
     
     

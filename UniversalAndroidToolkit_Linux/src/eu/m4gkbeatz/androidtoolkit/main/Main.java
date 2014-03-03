@@ -23,9 +23,8 @@ import eu.m4gkbeatz.androidtoolkit.settings.SettingsManager;
 import eu.m4gkbeatz.androidtoolkit.splash.SplashScreen;
 import eu.m4gkbeatz.androidtoolkit.ui.*;
 
-import javax.swing.UIManager;
+import javax.swing.*;
 import java.io.*;
-import javax.swing.ImageIcon;
 
 /**
  *
@@ -48,7 +47,7 @@ public class Main {
              }
              }*/
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | Exception ex) {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             try {
                 UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
