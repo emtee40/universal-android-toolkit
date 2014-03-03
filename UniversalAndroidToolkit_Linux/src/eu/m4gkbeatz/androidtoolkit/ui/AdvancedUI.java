@@ -808,7 +808,7 @@ public class AdvancedUI extends JFrame {
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         log.log(LogLevel.INFO, "Installing application " + jTextField5.getText() + " to /system/app.");
         try {
-            
+            log.log(LogLevel.INFO, "ADB Output: " + adbController.executeADBCommand(false, true, devices.getSelectedADBDevice(), new String[]{"push", jTextField5.getText(), "/system/app/"}));
         } catch (IOException ex) {
             
         }
